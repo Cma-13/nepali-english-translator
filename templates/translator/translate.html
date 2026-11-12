@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Translate{% endblock %}
+{% block content %}
+<style>
+    .container { max-width: 800px; }
+    textarea, select { width: 100%; padding: 9px; margin: 6px 0 12px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; font-size: 15px; font-family: inherit; }
+    .options { display: flex; gap: 12px; }
+    .options div { flex: 1; }
+    .result-box { background: #f8fafc; border: 1px solid #d0d7e2; border-radius: 6px; padding: 16px; margin-top: 20px; white-space: pre-wrap; line-height: 1.7; }
+    .error-box { background: #fdecea; color: #c0392b; border-radius: 6px; padding: 12px; margin-top: 16px; }
+    .copy-btn { margin-top: 10px; background: #e2e8f0; border: none; padding: 8px 14px; border-radius: 5px; cursor: pointer; }
+    .note { font-size: 13px; color: #777; }
+</style>
+
+<h2>Nepali ↔ English Translator</h2>
+<p class="note">Please don't upload sensitive personal details like citizenship numbers. Use sample text if you're just testing.</p>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.text.errors }}
+    {{ form.text }}
+
+    <div class="options">
+        <div>
+            <label>Direction</label>
+            {{ form.direction }}
+        </div>
+        <div>
+            <label>Tone</label>
+            {{ form.tone }}
+        </div>
+    </div>
+
+    <button type="submit" class="btn">Translate</button>
+</form>
+
+{% if error %}
+    <div class="error-box">{{ error }}</div>
+{% endif %}
+
+{% if result %}
+    <h3>Translation</h3>
+    <div class="result-box" id="result">{{ result }}</div>
+    <button type="button" class="copy-btn" onclick="copyResult()">Copy</button>
+{% endif %}
+
+<script>
+    function copyResult() {
+        const text = document.getElementById("result").innerText;
+        navigator.clipboard.writeText(text);
+        alert("Copied!");
+    }
+</script>
+{% endblock %}
