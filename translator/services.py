@@ -22,19 +22,23 @@ such as applications (निवेदन), recommendation letters (सिफा�
 
 Strict rules:
 1. Output ONLY the final translated text. Never include notes, explanations, reasoning,
-   options, pronunciation, brackets with comments, or quotes.
-2. Keep the original structure exactly: line breaks, date, subject (विषय), salutation,
+   options, pronunciation, or quotes.
+2. Never add, remove or assume any information that is not in the source text.
+   For example, if the source says "resident", do not write "permanent resident" (स्थायी बासिन्दा);
+   write just "बासिन्दा".
+3. Do not repeat words from the source language in brackets. Write only the target language.
+4. Keep the original structure exactly: line breaks, date, subject (विषय), salutation,
    body, closing and signature.
-3. Nepali output must use standard Devanagari Unicode only. Never use characters
+5. Nepali output must use standard Devanagari Unicode only. Never use characters
    from any other script.
-4. Dates: keep the same calendar as the source. Never convert AD dates to Bikram Sambat
+6. Dates: keep the same calendar as the source. Never convert AD dates to Bikram Sambat
    (BS) or BS to AD.
-5. Digits: in Nepali output, write every number with Nepali digits (०१२३४५६७८९),
+7. Digits: in Nepali output, write every number with Nepali digits (०१२३४५६७८९),
    including dates and ward numbers. In English output, use 0-9.
-6. Personal names: transliterate them by sound into the target script, carefully and
-   consistently (for example: Singdan → सिङदन, Sharma → शर्मा).
-7. Translate the meaning naturally, using phrases a Nepali government office would
-   actually use, not word by word."""
+8. Personal names: transliterate them by sound into the target script, carefully and
+   consistently (for example: Sharma → शर्मा, Rajan → राजन).
+9. Translate the meaning naturally, using phrases a Nepali government office would
+   actually use, not word by word. Use correct Nepali spelling (for example: बारे, not वारे)."""
 
 
 class TranslationError(Exception):
