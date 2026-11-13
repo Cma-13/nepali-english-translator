@@ -20,7 +20,9 @@
         <strong>Smart Translator</strong>
         <div>
             {% if user.is_authenticated %}
-                Hi, {{ user.username }}
+                <a href="{% url 'home' %}">Translate</a>
+                <a href="{% url 'history' %}">History</a>
+                <span style="margin-left:14px;">Hi, {{ user.username }}</span>
                 <form action="{% url 'logout' %}" method="post" style="display:inline;">
                     {% csrf_token %}
                     <button type="submit">Logout</button>
