@@ -1,0 +1,13 @@
+{# The translated letter, editable. Used on the translator page and the history page. #}
+<form method="post" action="{% url 'history_edit' translation.pk %}">
+    {% csrf_token %}
+    <div class="sheet"{% if translation.direction == 'en_ne' %} lang="ne"{% endif %}>
+        <textarea name="translated_text" id="result" class="sheet-text sheet-input" aria-label="Translation, you can edit it" data-autosize data-watch-changes="#save-btn">{{ translation.translated_text }}</textarea>
+    </div>
+    <p class="hint after-note">You can type in the letter to fix a name or a word. Copy and Download use what you see here.</p>
+    <div class="actions">
+        <button type="button" class="btn" data-copy="#result">Copy</button>
+        <button type="submit" class="btn btn-quiet" formaction="{% url 'history_download' translation.pk %}">Download Word</button>
+        <button type="submit" class="btn btn-quiet" id="save-btn" disabled>Save changes</button>
+    </div>
+</form>
