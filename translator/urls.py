@@ -7,4 +7,5 @@ urlpatterns = [
     path("history/", views.history, name="history"),
     path("history/<int:pk>/", views.history_detail, name="history_detail"),
     path("history/<int:pk>/delete/", views.history_delete, name="history_delete"),
+    path("history/<int:pk>/download/", views.history_download, name="history_download"),
 ]
