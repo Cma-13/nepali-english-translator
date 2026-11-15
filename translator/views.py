@@ -5,8 +5,9 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_POST
 
 from .documents import build_translation_docx
-from .forms import TranslateForm
+from .forms import PreetiForm, TranslateForm
 from .models import Translation
+from .preeti import preeti_to_unicode
 from .services import TranslationError, translate_text
 
 DOCX_CONTENT_TYPE = "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
@@ -20,14 +21,16 @@ def translate(request):
     if request.method == "POST":
         form = TranslateForm(request.POST)
         if form.is_valid():
+            data = form.cleaned_data
+            text = preeti_to_unicode(data["text"]) if data["is_preeti"] else data["text"]
             try:
-                result = translate_text(**form.cleaned_data)
+                result = translate_text(text, data["direction"], data["tone"])
                 translation = Translation.objects.create(
                     user=request.user,
-                    source_text=form.cleaned_data["text"],
+                    source_text=text,
                     translated_text=result,
-                    direction=form.cleaned_data["direction"],
-                    tone=form.cleaned_data["tone"],
+                    direction=data["direction"],
+                    tone=data["tone"],
                 )
             except TranslationError as e:
                 error = str(e)
@@ -39,6 +42,20 @@ def translate(request):
         "translation": translation,
         "error": error,
     })
+
+
+@login_required
+def preeti_converter(request):
+    result = None
+
+    if request.method == "POST":
+        form = PreetiForm(request.POST)
+        if form.is_valid():
+            result = preeti_to_unicode(form.cleaned_data["text"])
+    else:
+        form = PreetiForm()
+
+    return render(request, "translator/preeti.html", {"form": form, "result": result})
 
 
 @login_required
