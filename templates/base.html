@@ -9,7 +9,8 @@
         nav { background: #1e3a5f; color: white; padding: 14px 24px; display: flex; justify-content: space-between; align-items: center; }
         nav a, nav button { color: white; text-decoration: none; margin-left: 14px; background: none; border: none; cursor: pointer; font-size: 15px; }
         .container { max-width: 480px; margin: 40px auto; background: white; padding: 28px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-        input { width: 100%; padding: 9px; margin: 6px 0 12px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
+        input[type=checkbox] { width: auto; margin: 0 6px 0 0; }
+        input:not([type=checkbox]) { width: 100%; padding: 9px; margin: 6px 0 12px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
         .btn { background: #1e3a5f; color: white; padding: 10px 18px; border: none; border-radius: 5px; cursor: pointer; width: 100%; }
         .errorlist { color: #c0392b; font-size: 14px; }
         .helptext { font-size: 12px; color: #777; }
@@ -21,6 +22,7 @@
         <div>
             {% if user.is_authenticated %}
                 <a href="{% url 'home' %}">Translate</a>
+                <a href="{% url 'preeti' %}">Preeti Converter</a>
                 <a href="{% url 'history' %}">History</a>
                 <span style="margin-left:14px;">Hi, {{ user.username }}</span>
                 <form action="{% url 'logout' %}" method="post" style="display:inline;">
