@@ -1,42 +1,63 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Smart Translator{% endblock %}</title>
-    <style>
-        body { font-family: Arial, sans-serif; background: #f4f6f9; margin: 0; }
-        nav { background: #1e3a5f; color: white; padding: 14px 24px; display: flex; justify-content: space-between; align-items: center; }
-        nav a, nav button { color: white; text-decoration: none; margin-left: 14px; background: none; border: none; cursor: pointer; font-size: 15px; }
-        .container { max-width: 480px; margin: 40px auto; background: white; padding: 28px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-        input[type=checkbox] { width: auto; margin: 0 6px 0 0; }
-        input:not([type=checkbox]) { width: 100%; padding: 9px; margin: 6px 0 12px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
-        .btn { background: #1e3a5f; color: white; padding: 10px 18px; border: none; border-radius: 5px; cursor: pointer; width: 100%; }
-        .errorlist { color: #c0392b; font-size: 14px; }
-        .helptext { font-size: 12px; color: #777; }
-    </style>
+    <title>{% block title %}Translate{% endblock %} | Nepali ↔ English Letter Translator</title>
+    <link rel="icon" href="{% static 'favicon.svg' %}" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/app.css' %}">
 </head>
 <body>
-    <nav>
-        <strong>Smart Translator</strong>
-        <div>
+    {% with page=request.resolver_match.url_name %}
+    <header class="site-header">
+        <div class="wrap header-row">
+            <a class="brand" href="{% url 'home' %}" aria-label="Home">
+                <span class="mark" aria-hidden="true">
+                    <span class="mark-en">A</span>
+                    <span class="mark-ne">अ</span>
+                </span>
+            </a>
             {% if user.is_authenticated %}
-                <a href="{% url 'home' %}">Translate</a>
-                <a href="{% url 'preeti' %}">Preeti Converter</a>
-                <a href="{% url 'history' %}">History</a>
-                <span style="margin-left:14px;">Hi, {{ user.username }}</span>
-                <form action="{% url 'logout' %}" method="post" style="display:inline;">
-                    {% csrf_token %}
-                    <button type="submit">Logout</button>
-                </form>
+                <nav class="site-nav" aria-label="Main">
+                    <a href="{% url 'home' %}" {% if page == 'home' %}class="active"{% endif %}>Translate</a>
+                    <a href="{% url 'preeti' %}" {% if page == 'preeti' %}class="active"{% endif %}>Preeti converter</a>
+                    <a href="{% url 'history' %}" {% if page == 'history' or page == 'history_detail' %}class="active"{% endif %}>History</a>
+                </nav>
+                <div class="nav-end">
+                    <span class="nav-user">
+                        <span class="avatar" aria-hidden="true">{{ user.username|slice:":1" }}</span>
+                        <span>{{ user.username }}</span>
+                    </span>
+                    <form action="{% url 'logout' %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="nav-btn">Log out</button>
+                    </form>
+                </div>
             {% else %}
-                <a href="{% url 'login' %}">Login</a>
-                <a href="{% url 'signup' %}">Sign up</a>
+                <div class="nav-end">
+                    <a href="{% url 'login' %}" class="nav-btn">Log in</a>
+                    <a href="{% url 'signup' %}" class="nav-btn nav-btn-solid">Create account</a>
+                </div>
             {% endif %}
         </div>
-    </nav>
-    <div class="container">
-        {% block content %}{% endblock %}
-    </div>
+    </header>
+    {% endwith %}
+
+    <main>
+        {% block main %}
+        <div class="wrap page">
+            {% for message in messages %}
+                <div class="notice notice-{{ message.tags }}" role="status">{{ message }}</div>
+            {% endfor %}
+            {% block content %}{% endblock %}
+        </div>
+        {% endblock %}
+    </main>
+
+    <script src="{% static 'js/app.js' %}"></script>
 </body>
 </html>
