@@ -54,12 +54,18 @@ CLUSTER = f"{CONSONANT}(?:्‍?{CONSONANT})*"  # one letter or a joined group:
 MATRAS = "[ा-ौ]"
 NASALS = "[ंँ]"
 REPH = "{"  # the र् drawn on top of a letter, as in कार्य
+DEVANAGARI = re.compile("[\u0900-\u097f]")
 
 
 def preeti_to_unicode(text):
     """Return Preeti-typed text as Nepali Unicode. Line breaks are kept."""
     if not text:
         return ""
+
+    # Real Preeti text has no Nepali letters in it. If we find any, the text is
+    # already Unicode, and converting it would only damage its punctuation.
+    if DEVANAGARI.search(text):
+        return text
 
     # Tail stroke first, while the text is still Preeti keys.
     text = TAIL_PATTERN.sub(lambda m: TAIL_FORMS[m.group(1)] + m.group(2), text)
