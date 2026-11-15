@@ -1,16 +1,20 @@
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_POST
 
+from .documents import build_translation_docx
 from .forms import TranslateForm
 from .models import Translation
 from .services import TranslationError, translate_text
 
+DOCX_CONTENT_TYPE = "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+
 
 @login_required
 def translate(request):
-    result = None
+    translation = None
     error = None
 
     if request.method == "POST":
@@ -18,7 +22,7 @@ def translate(request):
         if form.is_valid():
             try:
                 result = translate_text(**form.cleaned_data)
-                Translation.objects.create(
+                translation = Translation.objects.create(
                     user=request.user,
                     source_text=form.cleaned_data["text"],
                     translated_text=result,
@@ -32,7 +36,7 @@ def translate(request):
 
     return render(request, "translator/translate.html", {
         "form": form,
-        "result": result,
+        "translation": translation,
         "error": error,
     })
 
@@ -56,3 +60,13 @@ def history_delete(request, pk):
     translation = get_object_or_404(Translation, pk=pk, user=request.user)
     translation.delete()
     return redirect("history")
+
+
+@login_required
+def history_download(request, pk):
+    translation = get_object_or_404(Translation, pk=pk, user=request.user)
+    filename = f"translation-{translation.created_at:%Y-%m-%d}-{translation.pk}.docx"
+
+    response = HttpResponse(build_translation_docx(translation), content_type=DOCX_CONTENT_TYPE)
+    response["Content-Disposition"] = f'attachment; filename="{filename}"'
+    return response
