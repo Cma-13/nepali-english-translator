@@ -1,5 +1,7 @@
-from django.test import SimpleTestCase
+from django.contrib.auth.models import User
+from django.test import SimpleTestCase, TestCase
 
+from .models import Translation
 from .preeti import preeti_to_unicode
 
 
@@ -50,3 +52,44 @@ class PreetiToUnicodeTests(SimpleTestCase):
 
     def test_empty_text(self):
         self.assertConverts("", "")
+
+
+class EditTranslationTests(TestCase):
+    def setUp(self):
+        self.owner = User.objects.create_user("owner", password="pass12345")
+        self.other = User.objects.create_user("other", password="pass12345")
+        self.translation = Translation.objects.create(
+            user=self.owner,
+            source_text="Seema Singdan",
+            translated_text="सीमा सिङ्दान",
+            direction="en_ne",
+            tone="formal",
+        )
+        self.edit_url = f"/history/{self.translation.pk}/edit/"
+
+    def test_owner_can_fix_the_translation(self):
+        self.client.login(username="owner", password="pass12345")
+        self.client.post(self.edit_url, {"translated_text": "सीमा सिङदन"})
+        self.translation.refresh_from_db()
+        self.assertEqual(self.translation.translated_text, "सीमा सिङदन")
+
+    def test_other_user_cannot_edit(self):
+        self.client.login(username="other", password="pass12345")
+        response = self.client.post(self.edit_url, {"translated_text": "changed"})
+        self.assertEqual(response.status_code, 404)
+        self.translation.refresh_from_db()
+        self.assertEqual(self.translation.translated_text, "सीमा सिङ्दान")
+
+    def test_empty_edit_is_not_saved(self):
+        self.client.login(username="owner", password="pass12345")
+        self.client.post(self.edit_url, {"translated_text": "   "})
+        self.translation.refresh_from_db()
+        self.assertEqual(self.translation.translated_text, "सीमा सिङ्दान")
+
+    def test_download_uses_the_edited_text(self):
+        self.client.login(username="owner", password="pass12345")
+        download_url = f"/history/{self.translation.pk}/download/"
+        response = self.client.post(download_url, {"translated_text": "सीमा सिङदन"})
+        self.assertEqual(response.status_code, 200)
+        self.translation.refresh_from_db()
+        self.assertEqual(self.translation.translated_text, "सीमा सिङदन")
