@@ -58,8 +58,11 @@ class HistoryListAPIView(generics.ListAPIView):
         return Translation.objects.filter(user=self.request.user)
 
 
-class HistoryDetailAPIView(generics.RetrieveDestroyAPIView):
-    """GET one translation or DELETE it. Users can only reach their own."""
+class HistoryDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+    """GET one translation, PATCH its translated_text, or DELETE it.
+
+    Users can only reach their own.
+    """
 
     serializer_class = TranslationSerializer
 
