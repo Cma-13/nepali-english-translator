@@ -45,5 +45,8 @@ class PreetiToUnicodeTests(SimpleTestCase):
     def test_keeps_line_breaks(self):
         self.assertConverts("ljifo\nlgj]bg", "विषय\nनिवेदन")
 
+    def test_unicode_nepali_is_left_alone(self):
+        self.assertConverts("मिति: २०८३-०७-२९", "मिति: २०८३-०७-२९")
+
     def test_empty_text(self):
         self.assertConverts("", "")
