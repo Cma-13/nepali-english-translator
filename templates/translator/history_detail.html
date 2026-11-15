@@ -1,62 +1,34 @@
 {% extends "base.html" %}
 {% block title %}Translation{% endblock %}
 {% block content %}
-<style>
-    .container { max-width: 800px; }
-    .meta { font-size: 13px; color: #64748b; margin-bottom: 16px; }
-    .tag { background: #e2e8f0; color: #1e3a5f; padding: 2px 8px; border-radius: 10px; font-size: 12px; margin-right: 6px; }
-    .text-box { background: #f8fafc; border: 1px solid #d0d7e2; border-radius: 6px; padding: 16px; white-space: pre-wrap; line-height: 1.7; margin-bottom: 8px; }
-    .actions { display: flex; gap: 10px; margin-top: 20px; align-items: center; }
-    .small-btn { background: #e2e8f0; color: #1e3a5f; border: none; padding: 8px 16px; border-radius: 5px; cursor: pointer; font-size: 14px; text-decoration: none; transition: background 0.2s, color 0.2s; }
-    .small-btn:hover { background: #cbd5e1; }
-    .small-btn.copied { background: #16a34a; color: white; }
-    .small-btn.failed { background: #dc2626; color: white; }
-    .delete-btn { background: #fdecea; color: #c0392b; }
-    .delete-btn:hover { background: #f8d7da; }
-</style>
+<a href="{% url 'history' %}" class="back-link">Back to history</a>
 
-<a href="{% url 'history' %}" class="small-btn">← Back to history</a>
-
-<h2>Translation</h2>
-<div class="meta">
-    <span class="tag">{{ translation.get_direction_display }}</span>
-    <span class="tag">{{ translation.get_tone_display }}</span>
-    {{ translation.created_at|date:"d M Y, h:i A" }}
+<div class="page-head">
+    <h1>{{ translation.get_direction_display }}</h1>
+    <p class="lead">{{ translation.get_tone_display }} tone, translated on {{ translation.created_at|date:"j M Y, g:i A" }}</p>
 </div>
 
-<h3>Original</h3>
-<div class="text-box">{{ translation.source_text }}</div>
+<div class="workspace">
+    <section>
+        <p class="sheet-label"><span class="dot dot-blue"></span>Original</p>
+        <div class="sheet">
+            <div class="sheet-text">{{ translation.source_text }}</div>
+        </div>
+    </section>
 
-<h3>Translated</h3>
-<div class="text-box" id="result">{{ translation.translated_text }}</div>
-
-<div class="actions">
-    <button type="button" class="small-btn" id="copy-btn" onclick="copyResult()">Copy</button>
-    <a href="{% url 'history_download' translation.pk %}" class="small-btn">Download Word</a>
-    <form method="post" action="{% url 'history_delete' translation.pk %}">
-        {% csrf_token %}
-        <button type="submit" class="small-btn delete-btn">Delete</button>
-    </form>
+    <section>
+        <p class="sheet-label"><span class="dot"></span>Translation</p>
+        <div class="sheet">
+            <div class="sheet-text" id="result">{{ translation.translated_text }}</div>
+        </div>
+        <div class="actions">
+            <button type="button" class="btn" data-copy="#result">Copy</button>
+            <a href="{% url 'history_download' translation.pk %}" class="btn btn-quiet">Download Word</a>
+            <form method="post" action="{% url 'history_delete' translation.pk %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger" data-confirm="Yes, delete it">Delete</button>
+            </form>
+        </div>
+    </section>
 </div>
-
-<script>
-    function copyResult() {
-        const button = document.getElementById("copy-btn");
-        const text = document.getElementById("result").innerText;
-        navigator.clipboard.writeText(text)
-            .then(() => showButtonState(button, "Copied ✓", "copied"))
-            .catch(() => showButtonState(button, "Copy failed", "failed"));
-    }
-
-    function showButtonState(button, label, className) {
-        button.textContent = label;
-        button.classList.add(className);
-        button.disabled = true;
-        setTimeout(() => {
-            button.textContent = "Copy";
-            button.classList.remove(className);
-            button.disabled = false;
-        }, 2000);
-    }
-</script>
 {% endblock %}
