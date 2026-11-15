@@ -6,6 +6,7 @@ from . import api
 urlpatterns = [
     path("token/", obtain_auth_token, name="api_token"),
     path("translate/", api.TranslateAPIView.as_view(), name="api_translate"),
+    path("preeti/", api.PreetiConvertAPIView.as_view(), name="api_preeti"),
     path("history/", api.HistoryListAPIView.as_view(), name="api_history"),
     path("history/<int:pk>/", api.HistoryDetailAPIView.as_view(), name="api_history_detail"),
 ]
