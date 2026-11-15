@@ -7,6 +7,18 @@ class TranslateRequestSerializer(serializers.Serializer):
     text = serializers.CharField(max_length=5000)
     direction = serializers.ChoiceField(choices=Translation.DIRECTION_CHOICES)
     tone = serializers.ChoiceField(choices=Translation.TONE_CHOICES, default="formal")
+    is_preeti = serializers.BooleanField(default=False)
+
+    def validate(self, data):
+        if data["is_preeti"] and data["direction"] != "ne_en":
+            raise serializers.ValidationError(
+                {"is_preeti": "Preeti text is Nepali, so direction must be ne_en."}
+            )
+        return data
+
+
+class PreetiRequestSerializer(serializers.Serializer):
+    text = serializers.CharField(max_length=10000)
 
 
 class TranslationSerializer(serializers.ModelSerializer):
