@@ -124,7 +124,7 @@ static/                 CSS, JavaScript and the tab icon
 
 - **Prompt rules must be clear.** An early rule said "keep numbers as they are". The model could not tell whether that included Nepali digits, and it started writing its reasoning into the letter. Splitting it into two exact rules (keep the same calendar, use Nepali digits in Nepali output) fixed it.
 - **The model adds things.** It translated "resident" as "permanent resident" (स्थायी बासिन्दा), which means something different at a ward office. A rule with that exact example stopped it.
-- **Some problems are not prompt problems.** A name like "Singdan" can be written several ways in Devanagari, and only the owner knows the right one. No prompt can fix that, so the result is editable instead.
+- **Some problems are not prompt problems.** A name can be written several ways in Devanagari, and only the owner knows the right one. No prompt can fix that, so the result is editable instead.
 - **Test with wrong input too.** Ticking the Preeti option on text that was already Unicode damaged its punctuation (`:` is a Preeti key for स्). The converter now skips text that already contains Nepali letters, and a test keeps that bug from coming back.
 
 ## Known limits
@@ -133,11 +133,6 @@ static/                 CSS, JavaScript and the tab icon
 - English words inside Preeti text cannot be told apart from Preeti keys, so they get converted too.
 - The app uses Gemini's free tier, where submitted text may be used by Google to improve its products. Do not paste citizenship numbers or other private IDs.
 
-## Planned next
-
-- Deploy to a public host
-- More tests for login, translation and history privacy
-- Letter templates: fill a short form and get a ready letter in both languages
 
 ## Author
 
