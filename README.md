@@ -40,8 +40,8 @@ If Gemini is down or the free limit is reached, the user sees a plain message in
 You need Python 3.12 or newer and a free Gemini API key from [Google AI Studio](https://aistudio.google.com/app/apikey).
 
 ```bash
-git clone https://github.com/Cma-13/nepali-translator.git
-cd nepali-translator
+git clone https://github.com/Cma-13/nepali-english-translator.git
+cd nepali-english-translator
 
 python -m venv venv
 venv\Scripts\activate          # Windows
