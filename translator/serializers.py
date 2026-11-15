@@ -37,4 +37,5 @@ class TranslationSerializer(serializers.ModelSerializer):
             "tone_display",
             "created_at",
         ]
-        read_only_fields = fields
+        # Only the translated text can be corrected after saving.
+        read_only_fields = [f for f in fields if f != "translated_text"]
