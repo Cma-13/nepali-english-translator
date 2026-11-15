@@ -68,3 +68,29 @@ if (preetiRow) {
     document.querySelectorAll("input[name=direction]").forEach((radio) => radio.addEventListener("change", sync));
     sync();
 }
+
+// Eye button on every password field: click to show or hide what you typed.
+const EYE_OPEN = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>';
+const EYE_CLOSED = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.6 5.1A10.9 10.9 0 0 1 12 5c6.4 0 10 7 10 7a17.6 17.6 0 0 1-3.2 4.1M6.6 6.6C3.6 8.5 2 12 2 12s3.6 7 10 7a10.7 10.7 0 0 0 5.4-1.5"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/><path d="M3 3l18 18"/></svg>';
+
+document.querySelectorAll('input[type="password"]').forEach((input) => {
+    const wrap = document.createElement("div");
+    wrap.className = "password-wrap";
+    input.before(wrap);
+    wrap.append(input);
+
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "eye";
+    button.innerHTML = EYE_OPEN;
+    button.setAttribute("aria-label", "Show password");
+    wrap.append(button);
+
+    button.addEventListener("click", () => {
+        const show = input.type === "password";
+        input.type = show ? "text" : "password";
+        button.innerHTML = show ? EYE_CLOSED : EYE_OPEN;
+        button.setAttribute("aria-label", show ? "Hide password" : "Show password");
+        input.focus();
+    });
+});
