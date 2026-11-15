@@ -5,7 +5,8 @@ document.addEventListener("click", (event) => {
     const button = event.target.closest("[data-copy]");
     if (!button) return;
 
-    const text = document.querySelector(button.dataset.copy).innerText;
+    const source = document.querySelector(button.dataset.copy);
+    const text = "value" in source ? source.value : source.innerText;
     navigator.clipboard.writeText(text)
         .then(() => flash(button, "Copied ✓", "is-ok"))
         .catch(() => flash(button, "Copy failed", "is-failed"));
@@ -93,4 +94,22 @@ document.querySelectorAll('input[type="password"]').forEach((input) => {
         button.setAttribute("aria-label", show ? "Hide password" : "Show password");
         input.focus();
     });
+});
+
+// Editable letter sheet: the box grows with its text, and "Save changes"
+// only lights up once something was actually changed.
+document.querySelectorAll("textarea[data-autosize]").forEach((field) => {
+    const resize = () => {
+        field.style.height = "auto";
+        field.style.height = field.scrollHeight + "px";
+    };
+    const saveButton = document.querySelector(field.dataset.watchChanges);
+    const original = field.value;
+
+    field.addEventListener("input", () => {
+        resize();
+        if (saveButton) saveButton.disabled = field.value === original;
+    });
+    window.addEventListener("resize", resize);
+    resize();
 });
