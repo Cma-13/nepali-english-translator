@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}Official letters in Nepali and English{% endblock %}
+{% block main %}
+<section class="hero">
+    <div class="wrap hero-grid">
+        <div>
+            <h1>Official letters in Nepali and English
+                <span class="hero-ne" lang="ne">निवेदन, सिफारिस र सूचनाको अनुवाद</span>
+            </h1>
+            <p class="lead">Paste an application, a recommendation letter or a notice. Get it back in the other language, in the formal wording offices use, with the date, subject and signature lines kept in place.</p>
+            <div class="actions">
+                <a class="btn btn-big btn-gold" href="{% url 'signup' %}">Create a free account</a>
+                <a class="btn btn-big btn-ghost" href="{% url 'login' %}">Log in</a>
+            </div>
+        </div>
+
+        <div class="sheet-pair" aria-label="Example: an English letter and its Nepali translation">
+            <div class="sheet sheet-en">
+                <div class="sheet-text">Date: 2026-11-12
+
+To,
+The Ward Chairperson,
+Ward No. 4, Kathmandu
+
+Subject: Request for a recommendation letter
+
+Respected Sir/Madam,
+I am a resident of Ward No. 4. I kindly request you to issue a recommendation letter for my scholarship application.
+
+Sincerely,
+Rajan Sharma</div>
+            </div>
+            <div class="sheet sheet-ne" lang="ne">
+                <div class="sheet-text">मिति: २०२६-११-१२
+
+श्रीमान् वडा अध्यक्षज्यू,
+वडा नं. ४, काठमाडौँ
+
+विषय: सिफारिस पत्र पाऊँ भन्ने बारे।
+
+महोदय,
+म वडा नं. ४ को बासिन्दा हुँ। मेरो छात्रवृत्ति आवेदनको लागि सिफारिस पत्र जारी गरिदिनुहुन विनम्र अनुरोध गर्दछु।
+
+भवदीय,
+राजन शर्मा</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="wrap features">
+    <div class="feature">
+        <span class="feature-tile" lang="ne">श्री</span>
+        <h2>Written the way offices write</h2>
+        <p>Formal phrases like श्रीमान्, अनुरोध गर्दछु and भवदीय, and the letter layout stays as you wrote it.</p>
+    </div>
+    <div class="feature">
+        <span class="feature-tile red">g]kfn</span>
+        <h2>Reads old Preeti documents</h2>
+        <p>Text copied from a Preeti file looks like “g]kfn”. Convert it to real Nepali, then translate it.</p>
+    </div>
+    <div class="feature">
+        <span class="feature-tile gold">.docx</span>
+        <h2>Ready to print or send</h2>
+        <p>Download any translation as a Word file. Everything you translate is saved to your history.</p>
+    </div>
+</section>
+{% endblock %}
