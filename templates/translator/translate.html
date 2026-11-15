@@ -1,82 +1,76 @@
 {% extends "base.html" %}
 {% block title %}Translate{% endblock %}
 {% block content %}
-<style>
-    .container { max-width: 800px; }
-    textarea, select { width: 100%; padding: 9px; margin: 6px 0 12px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; font-size: 15px; font-family: inherit; }
-    .options { display: flex; gap: 12px; }
-    .options div { flex: 1; }
-    .result-box { background: #f8fafc; border: 1px solid #d0d7e2; border-radius: 6px; padding: 16px; margin-top: 20px; white-space: pre-wrap; line-height: 1.7; }
-    .error-box { background: #fdecea; color: #c0392b; border-radius: 6px; padding: 12px; margin-top: 16px; }
-    .actions { display: flex; gap: 10px; margin-top: 10px; }
-    .copy-btn { text-decoration: none; background: #e2e8f0; color: #1e3a5f; border: none; padding: 8px 16px; border-radius: 5px; cursor: pointer; font-size: 14px; transition: background 0.2s, color 0.2s; }
-    .copy-btn:hover { background: #cbd5e1; }
-    .copy-btn.copied { background: #16a34a; color: white; }
-    .copy-btn.failed { background: #dc2626; color: white; }
-    .note { font-size: 13px; color: #777; }
-    .check { font-size: 14px; margin: 0 0 14px; }
-</style>
+<div class="page-head">
+    <h1>Translate a letter</h1>
+    <p class="lead">Paste the full letter, with its date, subject and signature lines. The translation keeps the same layout.</p>
+</div>
 
-<h2>Nepali ↔ English Translator</h2>
-<p class="note">Please don't upload sensitive personal details like citizenship numbers. Use sample text if you're just testing.</p>
+<div class="workspace">
+    <form method="post" class="panel" data-loading="Translating…">
+        {% csrf_token %}
 
-<form method="post">
-    {% csrf_token %}
-    {{ form.text.errors }}
-    {{ form.text }}
-
-    <div class="options">
-        <div>
-            <label>Direction</label>
-            {{ form.direction }}
+        <div class="options">
+            <div class="field">
+                <span class="field-label">Direction</span>
+                <div class="switch">
+                    {% for radio in form.direction %}
+                        <label>{{ radio.tag }}<span>{{ radio.choice_label }}</span></label>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="field">
+                <span class="field-label">Tone</span>
+                <div class="switch">
+                    {% for radio in form.tone %}
+                        <label>{{ radio.tag }}<span>{{ radio.choice_label }}</span></label>
+                    {% endfor %}
+                </div>
+            </div>
         </div>
-        <div>
-            <label>Tone</label>
-            {{ form.tone }}
+
+        <div class="field">
+            <div class="field-row">
+                <label for="{{ form.text.id_for_label }}">Your text</label>
+                <span class="hint" data-count-for="{{ form.text.id_for_label }}"></span>
+            </div>
+            {{ form.text }}
+            {{ form.text.errors }}
+            <p class="hint">Use sample details while testing. Don't paste citizenship numbers or other private IDs.</p>
         </div>
-    </div>
 
-    <p class="check">
-        <label>{{ form.is_preeti }}{{ form.is_preeti.label }}</label>
-    </p>
-    {{ form.is_preeti.errors }}
+        <div class="field" data-preeti-row>
+            <label class="check">
+                {{ form.is_preeti }}
+                <span>My text is typed in Preeti font <span class="hint">(it looks like “g]kfn”)</span></span>
+            </label>
+            {{ form.is_preeti.errors }}
+        </div>
 
-    <button type="submit" class="btn">Translate</button>
-</form>
+        <button type="submit" class="btn btn-big btn-block">Translate</button>
+    </form>
 
-{% if error %}
-    <div class="error-box">{{ error }}</div>
-{% endif %}
+    <section aria-live="polite">
+        {% if error %}
+            <div class="notice notice-error">{{ error }}</div>
+        {% endif %}
 
-{% if translation %}
-    <h3>Translation</h3>
-    <div class="result-box" id="result">{{ translation.translated_text }}</div>
-    <div class="actions">
-        <button type="button" class="copy-btn" id="copy-btn" onclick="copyResult()">Copy</button>
-        <a href="{% url 'history_download' translation.pk %}" class="copy-btn">Download Word</a>
-    </div>
-{% endif %}
-
-<script>
-    function copyResult() {
-        const button = document.getElementById("copy-btn");
-        const text = document.getElementById("result").innerText;
-
-        navigator.clipboard.writeText(text)
-            .then(() => showButtonState(button, "Copied ✓", "copied"))
-            .catch(() => showButtonState(button, "Copy failed", "failed"));
-    }
-
-    function showButtonState(button, label, className) {
-        button.textContent = label;
-        button.classList.add(className);
-        button.disabled = true;
-
-        setTimeout(() => {
-            button.textContent = "Copy";
-            button.classList.remove(className);
-            button.disabled = false;
-        }, 2000);
-    }
-</script>
+        {% if translation %}
+            <p class="sheet-label"><span class="dot"></span>Translation in {% if translation.direction == 'en_ne' %}Nepali{% else %}English{% endif %}</p>
+            <div class="sheet">
+                <div class="sheet-text" id="result">{{ translation.translated_text }}</div>
+            </div>
+            <div class="actions">
+                <button type="button" class="btn" data-copy="#result">Copy</button>
+                <a href="{% url 'history_download' translation.pk %}" class="btn btn-quiet">Download Word</a>
+            </div>
+            <p class="hint after-note">Saved to your <a href="{% url 'history' %}">history</a>. Check names and numbers before you send it.</p>
+        {% else %}
+            <p class="sheet-label"><span class="dot"></span>Translation</p>
+            <div class="sheet sheet-empty">
+                <p>Your translated letter appears here, ready to copy or download as a Word file.</p>
+            </div>
+        {% endif %}
+    </section>
+</div>
 {% endblock %}
