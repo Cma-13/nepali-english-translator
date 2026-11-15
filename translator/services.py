@@ -12,7 +12,9 @@ TONE_RULES = {
     "formal": (
         "Use a formal, official tone suitable for government offices, ward offices, "
         "colleges and companies. In Nepali, use standard official letter phrases "
-        "(for example: श्रीमान्, उपरोक्त विषयमा, अनुरोध गर्दछु, गरिदिनुहुन, भवदीय)."
+        "(for example: श्रीमान्, अनुरोध गर्दछु, गरिदिनुहुन, भवदीय) only where they fit. "
+        "Use 'उपरोक्त विषयमा' only inside a full letter that has a subject line, "
+        "never for a single sentence or short text."
     ),
     "simple": "Use clear, simple, everyday language while staying polite.",
 }
@@ -38,7 +40,12 @@ Strict rules:
 8. Personal names: transliterate them by sound into the target script, carefully and
    consistently (for example: Sharma → शर्मा, Rajan → राजन).
 9. Translate the meaning naturally, using phrases a Nepali government office would
-   actually use, not word by word. Use correct Nepali spelling (for example: बारे, not वारे)."""
+   actually use, not word by word. Use correct Nepali spelling (for example: बारे, not वारे).
+10. English output must read like a letter written by a fluent English speaker, not a
+   literal translation. Use standard formal letter English: subject lines such as
+   "Request for a character certificate"; salutations such as "Respected Sir/Madam";
+   requests such as "I kindly request you to issue...". Avoid literal phrases like
+   "politely request", "make available" or "regarding the availability of"."""
 
 
 class TranslationError(Exception):
