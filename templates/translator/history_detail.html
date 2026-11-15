@@ -32,6 +32,7 @@
 
 <div class="actions">
     <button type="button" class="small-btn" id="copy-btn" onclick="copyResult()">Copy</button>
+    <a href="{% url 'history_download' translation.pk %}" class="small-btn">Download Word</a>
     <form method="post" action="{% url 'history_delete' translation.pk %}">
         {% csrf_token %}
         <button type="submit" class="small-btn delete-btn">Delete</button>
