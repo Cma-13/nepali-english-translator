@@ -1,11 +1,48 @@
 {% extends "base.html" %}
-{% block title %}Sign up{% endblock %}
-{% block content %}
-<h2>Create account</h2>
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn">Sign up</button>
-</form>
-<p>Already have an account? <a href="{% url 'login' %}">Login</a></p>
+{% block title %}Create account{% endblock %}
+{% block main %}
+<div class="auth">
+    <section class="auth-side">
+        <h1>Official letters in Nepali and English
+            <span class="hero-ne" lang="ne">निवेदन, सिफारिस र सूचनाको अनुवाद</span>
+        </h1>
+        <ul class="auth-points">
+            <li>Formal wording, with the letter layout kept in place</li>
+            <li>Old Preeti text converted to real Nepali</li>
+            <li>Word download and a saved history</li>
+        </ul>
+    </section>
+    <section class="auth-form">
+        <div>
+            <div class="page-head">
+                <h2>Create account</h2>
+                <p class="lead">It's free. You only need a username and a password.</p>
+            </div>
+
+            <form method="post" class="panel">
+                {% csrf_token %}
+                {{ form.non_field_errors }}
+                <div class="field">
+                    <label for="{{ form.username.id_for_label }}">Username</label>
+                    {{ form.username }}
+                    {{ form.username.errors }}
+                </div>
+                <div class="field">
+                    <label for="{{ form.password1.id_for_label }}">Password</label>
+                    {{ form.password1 }}
+                    <p class="hint">At least 8 characters, and not only numbers.</p>
+                    {{ form.password1.errors }}
+                </div>
+                <div class="field">
+                    <label for="{{ form.password2.id_for_label }}">Password again</label>
+                    {{ form.password2 }}
+                    {{ form.password2.errors }}
+                </div>
+                <button type="submit" class="btn btn-big btn-block">Create account</button>
+            </form>
+
+            <p class="hint after-note">Already have an account? <a href="{% url 'login' %}">Log in</a></p>
+        </div>
+    </section>
+</div>
 {% endblock %}
