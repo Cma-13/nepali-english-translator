@@ -14,6 +14,7 @@
     .copy-btn.copied { background: #16a34a; color: white; }
     .copy-btn.failed { background: #dc2626; color: white; }
     .note { font-size: 13px; color: #777; }
+    .check { font-size: 14px; margin: 0 0 14px; }
 </style>
 
 <h2>Nepali ↔ English Translator</h2>
@@ -34,6 +35,11 @@
             {{ form.tone }}
         </div>
     </div>
+
+    <p class="check">
+        <label>{{ form.is_preeti }}{{ form.is_preeti.label }}</label>
+    </p>
+    {{ form.is_preeti.errors }}
 
     <button type="submit" class="btn">Translate</button>
 </form>
