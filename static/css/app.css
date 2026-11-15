@@ -99,6 +99,10 @@ a { color: var(--stamp); }
 input[type="text"], input[type="password"], textarea { width: 100%; padding: 11px 13px; border: 1px solid var(--line); border-radius: 8px; background: #fbfcff; color: var(--ink); font: inherit; }
 textarea { resize: vertical; min-height: 42vh; line-height: 1.65; }
 input:focus, textarea:focus { outline: none; border-color: var(--stamp); background: var(--paper); box-shadow: 0 0 0 3px var(--stamp-tint); }
+.password-wrap { position: relative; }
+.password-wrap input { padding-right: 48px; }
+.eye { position: absolute; top: 50%; right: 6px; transform: translateY(-50%); display: grid; place-items: center; width: 36px; height: 36px; border: 0; border-radius: 6px; background: none; color: var(--ink-soft); cursor: pointer; }
+.eye:hover { color: var(--indigo); background: var(--stamp-tint); }
 .errorlist { list-style: none; margin: 6px 0 0; padding: 0; color: var(--simrik); font-size: 0.92rem; }
 .options { display: grid; grid-template-columns: 1.25fr 1fr; gap: 0 20px; }
 
