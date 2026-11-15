@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.http import HttpResponse
@@ -13,8 +14,11 @@ from .services import TranslationError, translate_text
 DOCX_CONTENT_TYPE = "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
 
 
-@login_required
 def translate(request):
+    # Visitors who are not logged in see the landing page instead.
+    if not request.user.is_authenticated:
+        return render(request, "landing.html")
+
     translation = None
     error = None
 
@@ -76,6 +80,7 @@ def history_detail(request, pk):
 def history_delete(request, pk):
     translation = get_object_or_404(Translation, pk=pk, user=request.user)
     translation.delete()
+    messages.success(request, "Translation deleted.")
     return redirect("history")
 
 
