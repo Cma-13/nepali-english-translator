@@ -18,12 +18,8 @@
 
     <section>
         <p class="sheet-label"><span class="dot"></span>Translation</p>
-        <div class="sheet">
-            <div class="sheet-text" id="result">{{ translation.translated_text }}</div>
-        </div>
+        {% include "translator/_result_sheet.html" %}
         <div class="actions">
-            <button type="button" class="btn" data-copy="#result">Copy</button>
-            <a href="{% url 'history_download' translation.pk %}" class="btn btn-quiet">Download Word</a>
             <form method="post" action="{% url 'history_delete' translation.pk %}">
                 {% csrf_token %}
                 <button type="submit" class="btn btn-danger" data-confirm="Yes, delete it">Delete</button>
