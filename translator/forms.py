@@ -40,6 +40,14 @@ class TranslateForm(forms.Form):
         return cleaned_data
 
 
+class EditTranslationForm(forms.Form):
+    translated_text = forms.CharField(max_length=20000)
+
+    def clean_translated_text(self):
+        # Browsers send Windows line endings; store plain ones.
+        return self.cleaned_data["translated_text"].replace("\r\n", "\n")
+
+
 class PreetiForm(forms.Form):
     text = forms.CharField(
         max_length=10000,
