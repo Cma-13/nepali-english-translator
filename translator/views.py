@@ -6,7 +6,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_POST
 
 from .documents import build_translation_docx
-from .forms import PreetiForm, TranslateForm
+from .forms import EditTranslationForm, PreetiForm, TranslateForm
 from .models import Translation
 from .preeti import preeti_to_unicode
 from .services import TranslationError, translate_text
@@ -84,9 +84,34 @@ def history_delete(request, pk):
     return redirect("history")
 
 
+def _save_edit(request, translation):
+    """Save an edited translation sent from the letter sheet. Returns True if saved."""
+    form = EditTranslationForm(request.POST)
+    if not form.is_valid():
+        return False
+    translation.translated_text = form.cleaned_data["translated_text"]
+    translation.save(update_fields=["translated_text"])
+    return True
+
+
+@login_required
+@require_POST
+def history_edit(request, pk):
+    translation = get_object_or_404(Translation, pk=pk, user=request.user)
+    if _save_edit(request, translation):
+        messages.success(request, "Changes saved.")
+    else:
+        messages.error(request, "The translation can't be empty.")
+    return redirect("history_detail", pk=pk)
+
+
 @login_required
 def history_download(request, pk):
     translation = get_object_or_404(Translation, pk=pk, user=request.user)
+    # The Download button on the letter sheet sends the edited text along,
+    # so the Word file always matches what is on screen.
+    if request.method == "POST":
+        _save_edit(request, translation)
     filename = f"translation-{translation.created_at:%Y-%m-%d}-{translation.pk}.docx"
 
     response = HttpResponse(build_translation_docx(translation), content_type=DOCX_CONTENT_TYPE)
