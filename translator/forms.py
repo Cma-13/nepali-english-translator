@@ -14,15 +14,20 @@ class TranslateForm(forms.Form):
     text = forms.CharField(
         max_length=5000,
         widget=forms.Textarea(attrs={
-            "rows": 10,
+            "rows": 12,
+            "maxlength": 5000,
             "placeholder": "Paste your letter or text here...",
         }),
     )
-    direction = forms.ChoiceField(choices=DIRECTION_CHOICES)
-    tone = forms.ChoiceField(choices=TONE_CHOICES)
+    direction = forms.ChoiceField(
+        choices=DIRECTION_CHOICES, widget=forms.RadioSelect, initial="en_ne",
+    )
+    tone = forms.ChoiceField(
+        choices=TONE_CHOICES, widget=forms.RadioSelect, initial="formal",
+    )
     is_preeti = forms.BooleanField(
         required=False,
-        label="My text is typed in Preeti font (looks like: g]kfn)",
+        label="My text is typed in Preeti font",
     )
 
     def clean(self):
@@ -39,7 +44,8 @@ class PreetiForm(forms.Form):
     text = forms.CharField(
         max_length=10000,
         widget=forms.Textarea(attrs={
-            "rows": 8,
+            "rows": 12,
+            "maxlength": 10000,
             "placeholder": "Paste Preeti text here, for example: g]kfn ;/sf/",
         }),
     )
