@@ -4,7 +4,12 @@ from rest_framework.throttling import ScopedRateThrottle
 from rest_framework.views import APIView
 
 from .models import Translation
-from .serializers import TranslateRequestSerializer, TranslationSerializer
+from .preeti import preeti_to_unicode
+from .serializers import (
+    PreetiRequestSerializer,
+    TranslateRequestSerializer,
+    TranslationSerializer,
+)
 from .services import TranslationError, translate_text
 
 
@@ -18,20 +23,30 @@ class TranslateAPIView(APIView):
         serializer = TranslateRequestSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         data = serializer.validated_data
+        text = preeti_to_unicode(data["text"]) if data["is_preeti"] else data["text"]
 
         try:
-            result = translate_text(data["text"], data["direction"], data["tone"])
+            result = translate_text(text, data["direction"], data["tone"])
         except TranslationError as e:
             return Response({"detail": str(e)}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
 
         translation = Translation.objects.create(
             user=request.user,
-            source_text=data["text"],
+            source_text=text,
             translated_text=result,
             direction=data["direction"],
             tone=data["tone"],
         )
         return Response(TranslationSerializer(translation).data, status=status.HTTP_201_CREATED)
+
+
+class PreetiConvertAPIView(APIView):
+    """POST Preeti-typed text, get Nepali Unicode back. Nothing is saved."""
+
+    def post(self, request):
+        serializer = PreetiRequestSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        return Response({"unicode_text": preeti_to_unicode(serializer.validated_data["text"])})
 
 
 class HistoryListAPIView(generics.ListAPIView):
